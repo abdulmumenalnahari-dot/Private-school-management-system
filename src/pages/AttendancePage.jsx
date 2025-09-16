@@ -12,7 +12,7 @@ import '../styles/pages/attendance.css';
 
 const AttendancePage = () => {
   const [attendance, setAttendance] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState([]); // قائمة جميع الطلاب النشطين
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -148,12 +148,16 @@ const AttendancePage = () => {
         student_id: studentId,
         date: currentDate,
         status: newStatus,
+        // إضافة الحقول الإضافية المطلوبة
         time_in: null,
         time_out: null,
         notes: null,
       };
 
+      // إرسال الطلب إلى الخادم
       await api.post('/attendance', attendanceData);
+
+      // إعادة تحميل البيانات لتحديث الجدول
       loadAttendance();
       showToast(`تم تحديث حالة الطالب إلى: ${newStatus}`);
     } catch (error) {
@@ -180,6 +184,7 @@ const AttendancePage = () => {
   const renderStatusButtons = (record) => {
     const handleRadioChange = (e) => {
       const newStatus = e.target.value;
+      // تحديث الحالة فورًا دون انتظار الضغط على زر حفظ
       handleStatusChange(record.student_id, newStatus);
     };
 
@@ -241,8 +246,8 @@ const AttendancePage = () => {
         size="sm"
         icon="fas fa-trash"
         title="حذف"
-        onClick={() => handleDelete(record.id || record.student_id)}
-        disabled={!record.id}
+        onClick={() => handleDelete(record.id || record.student_id)} // استخدام student_id كمفتاح بديل
+        disabled={!record.id} // تعطيل زر الحذف إذا لم يكن هناك سجل
       />
     </div>
   );
@@ -255,12 +260,12 @@ const AttendancePage = () => {
     {
       header: 'الحالة',
       accessor: 'status',
-      render: renderStatusButtons
+      render: renderStatusButtons // استخدام الدالة الجديدة
     },
     {
       header: 'الإجراءات',
       accessor: 'actions',
-      render: renderActions
+      render: renderActions // استخدام دالة renderActions هنا
     }
   ];
 
@@ -334,7 +339,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions}
+              renderActions={renderActions} // تمرير renderActions هنا
               emptyMessage="لا توجد بيانات حضور لهذا اليوم"
             />
           </Tab>
@@ -342,7 +347,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions}
+              renderActions={renderActions} // تمرير renderActions هنا
               emptyMessage="لا توجد بيانات حضور لهذا اليوم"
             />
           </Tab>
@@ -350,7 +355,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions}
+              renderActions={renderActions} // تمرير renderActions هنا
               emptyMessage="لا توجد بيانات غياب لهذا اليوم"
             />
           </Tab>
@@ -358,7 +363,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions}
+              renderActions={renderActions} // تمرير renderActions هنا
               emptyMessage="لا توجد بيانات تأخير لهذا اليوم"
             />
           </Tab>
@@ -366,7 +371,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions}
+              renderActions={renderActions} // تمرير renderActions هنا
               emptyMessage="لا توجد بيانات إجازة لهذا اليوم"
             />
           </Tab>
@@ -391,4 +396,4 @@ const AttendancePage = () => {
   );
 };
 
-export default AttendancePage;
+export default AttendancePage; 
