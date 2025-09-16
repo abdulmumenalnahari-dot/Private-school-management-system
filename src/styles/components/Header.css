@@ -1,0 +1,25 @@
+/* Header Styles */
+header {
+    background: white;
+    padding: 15px 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--primary);
+}
+
+.logo i {
+    font-size: 1.8rem;
+}

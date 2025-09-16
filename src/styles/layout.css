@@ -1,0 +1,144 @@
+/* src/styles/layout.css */
+.header {
+  background: white;
+  padding: 15px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+
+.logo i {
+  font-size: 1.8rem;
+}
+
+.toggle-sidebar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  display: none;
+}
+
+.toggle-sidebar:hover {
+  transform: rotate(90deg);
+  background: var(--primary-light);
+}
+
+.sidebar {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 280px;
+  height: calc(100vh - 70px);
+  background: white;
+  padding: 25px 0;
+  box-shadow: var(--shadow);
+  z-index: 900;
+  transition: var(--transition);
+  border-right: 1px solid var(--border-color);
+  flex-direction: column;
+  display: flex;
+}
+
+.sidebar.show {
+  transform: translateX(0);
+}
+
+.sidebar-item {
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gray-700);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+  border-left: 4px solid transparent;
+}
+
+.sidebar-item:hover, 
+.sidebar-item.active {
+  background: #e3f2fd;
+  color: var(--primary);
+  border-left: 4px solid var(--primary);
+}
+
+.sidebar-item i {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+.main-content {
+  padding: 30px 0;
+  min-height: calc(100vh - 70px);
+  transition: var(--transition);
+}
+
+.page-content {
+  padding: 0 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .toggle-sidebar {
+    display: flex;
+  }
+}
+
+@media (min-width: 993px) {
+  .sidebar {
+    position: static;
+    width: auto;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border-right: none;
+    flex-direction: row;
+    gap: 0;
+    margin-right: 20px;
+  }
+  
+  .sidebar-item {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 18px;
+    border-radius: 8px 8px 0 0;
+    margin: 0 2px;
+  }
+  
+  .sidebar-item:hover,
+  .sidebar-item.active {
+    background: #f8fafc;
+    color: var(--primary);
+    border-bottom: 3px solid var(--primary);
+  }
+}
