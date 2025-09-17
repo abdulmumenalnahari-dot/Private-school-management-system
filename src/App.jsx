@@ -7,20 +7,19 @@ import StudentsPage from './pages/StudentsPage';
 import FeesPage from './pages/FeesPage';
 import AttendancePage from './pages/AttendancePage';
 import ReportsPage from './pages/ReportsPage';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/students" element={<StudentsPage />} />
-          <Route path="/fees" element={<FeesPage />} />
-          <Route path="/attendance" element={<AttendancePage />} />
-          <Route path="/reports" element={<ReportsPage />} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/students" element={<StudentsPage />} />
+        <Route path="/fees" element={<FeesPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
+        <Route path="/reports" element={<ReportsPage />} />
+      </Routes>
     </Router>
   );
 }
