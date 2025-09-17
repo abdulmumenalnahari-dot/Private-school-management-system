@@ -1,20 +1,7 @@
-// src/services/api.js
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:10000/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+const API = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:10000/api",
 });
 
-// إضافة توكين المصادقة إذا لزم الأمر
-// api.interceptors.request.use(config => {
-//   const token = localStorage.getItem('token');
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
-
-export default api;
+export default API;
