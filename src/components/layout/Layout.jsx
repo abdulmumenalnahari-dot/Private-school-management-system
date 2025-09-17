@@ -12,12 +12,7 @@ const Layout = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const showToast = (message) => {
-    setToast({ show: true, message });
-    setTimeout(() => {
-      setToast({ show: false, message: '' });
-    }, 3000);
-  };
+
 
   useEffect(() => {
     const handleResize = () => {

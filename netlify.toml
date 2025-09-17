@@ -1,11 +1,9 @@
-# netlify.toml
-
 [build]
-  base = ""               # جذر المشروع
-  publish = "build"       # مجلد البناء الناتج عن CRACO
-  command = "npm run build"  # أمر البناء
+  base = ""
+  publish = "build"
+  command = "npm run build"
 
 [[redirects]]
-  from = "/*"             # كل الطلبات
-  to = "/index.html"      # يعيد توجيهها إلى index.html
-  status = 200            # حالة الاستجابة
+  from = "/*"
+  to = "/index.html"
+  status = 200
