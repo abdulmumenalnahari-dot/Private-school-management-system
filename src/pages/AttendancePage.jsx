@@ -12,7 +12,7 @@ import '../styles/pages/attendance.css';
 
 const AttendancePage = () => {
   const [attendance, setAttendance] = useState([]);
-  const [students, setStudents] = useState([]); // قائمة جميع الطلاب النشطين
+  const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,12 +105,12 @@ const AttendancePage = () => {
     return filteredStudents.map(student => {
       const record = attendance.find(a => a.student_id === student.id);
       return {
-        id: record?.id || null,
+        id: record?.id || `temp-${student.id}`, // استخدام معرف مؤقت إذا لم يكن هناك سجل
         student_id: student.id,
         name: student.name,
         grade: student.grade,
         section: student.section,
-        status: record?.status || 'غائب', // إذا لم يكن هناك سجل، فالحالة افتراضية "غائب"
+        status: record?.status || 'غائب',
         time_in: record?.time_in || null,
         time_out: record?.time_out || null,
         notes: record?.notes || null,
@@ -148,16 +148,12 @@ const AttendancePage = () => {
         student_id: studentId,
         date: currentDate,
         status: newStatus,
-        // إضافة الحقول الإضافية المطلوبة
         time_in: null,
         time_out: null,
         notes: null,
       };
 
-      // إرسال الطلب إلى الخادم
       await api.post('/attendance', attendanceData);
-
-      // إعادة تحميل البيانات لتحديث الجدول
       loadAttendance();
       showToast(`تم تحديث حالة الطالب إلى: ${newStatus}`);
     } catch (error) {
@@ -170,6 +166,11 @@ const AttendancePage = () => {
   const handleDelete = async (id) => {
     if (window.confirm('هل أنت متأكد من حذف سجل الحضور هذا؟')) {
       try {
+        // إذا كان ID مؤقتًا، لا يمكن حذفه لأنه غير موجود في قاعدة البيانات
+        if (typeof id === 'string' && id.startsWith('temp-')) {
+          showToast('لا يمكن حذف هذا السجل لأنه غير مسجل في قاعدة البيانات.');
+          return;
+        }
         await api.delete(`/attendance/${id}`);
         loadAttendance();
         showToast('تم حذف السجل بنجاح!');
@@ -184,7 +185,6 @@ const AttendancePage = () => {
   const renderStatusButtons = (record) => {
     const handleRadioChange = (e) => {
       const newStatus = e.target.value;
-      // تحديث الحالة فورًا دون انتظار الضغط على زر حفظ
       handleStatusChange(record.student_id, newStatus);
     };
 
@@ -246,8 +246,8 @@ const AttendancePage = () => {
         size="sm"
         icon="fas fa-trash"
         title="حذف"
-        onClick={() => handleDelete(record.id || record.student_id)} // استخدام student_id كمفتاح بديل
-        disabled={!record.id} // تعطيل زر الحذف إذا لم يكن هناك سجل
+        onClick={() => handleDelete(record.id)}
+        disabled={typeof record.id === 'string' && record.id.startsWith('temp-')} // تعطيل زر الحذف إذا كان السجل مؤقتًا
       />
     </div>
   );
@@ -260,12 +260,12 @@ const AttendancePage = () => {
     {
       header: 'الحالة',
       accessor: 'status',
-      render: renderStatusButtons // استخدام الدالة الجديدة
+      render: renderStatusButtons
     },
     {
       header: 'الإجراءات',
       accessor: 'actions',
-      render: renderActions // استخدام دالة renderActions هنا
+      render: renderActions
     }
   ];
 
@@ -339,7 +339,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions} // تمرير renderActions هنا
+              renderActions={renderActions}
               emptyMessage="لا توجد بيانات حضور لهذا اليوم"
             />
           </Tab>
@@ -347,7 +347,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions} // تمرير renderActions هنا
+              renderActions={renderActions}
               emptyMessage="لا توجد بيانات حضور لهذا اليوم"
             />
           </Tab>
@@ -355,7 +355,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions} // تمرير renderActions هنا
+              renderActions={renderActions}
               emptyMessage="لا توجد بيانات غياب لهذا اليوم"
             />
           </Tab>
@@ -363,7 +363,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions} // تمرير renderActions هنا
+              renderActions={renderActions}
               emptyMessage="لا توجد بيانات تأخير لهذا اليوم"
             />
           </Tab>
@@ -371,7 +371,7 @@ const AttendancePage = () => {
             <Table
               columns={columns}
               data={filterAttendance()}
-              renderActions={renderActions} // تمرير renderActions هنا
+              renderActions={renderActions}
               emptyMessage="لا توجد بيانات إجازة لهذا اليوم"
             />
           </Tab>
@@ -396,4 +396,4 @@ const AttendancePage = () => {
   );
 };
 
-export default AttendancePage; 
+export default AttendancePage;
