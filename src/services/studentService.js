@@ -26,7 +26,9 @@ export const addStudent = async (studentData) => {
     const response = await api.post('/students', studentData);
     return response.data;
   } catch (error) {
-    console.error('Error adding student:', error);
+    if (error.response?.data?.error.includes('الطالب موجود مسبقًا')) {
+      throw new Error('الطالب موجود مسبقًا');
+    }
     throw error;
   }
 };

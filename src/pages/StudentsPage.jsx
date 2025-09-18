@@ -28,9 +28,16 @@ const StudentsPage = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   useEffect(() => {
-    loadStudents();
-    loadSections();
-  }, []);
+  const load = async () => {
+    try {
+      await loadStudents();
+    } catch (err) {
+      setError('حدث خطأ أثناء تحميل الطلاب. يرجى المحاولة لاحقًا.');
+      console.error('Error loading students:', err);
+    }
+  };
+  load();
+}, []);
 
   const loadStudents = async () => {
     try {
@@ -171,23 +178,6 @@ const StudentsPage = () => {
     { header: 'الإجراءات', accessor: 'actions' }
   ];
 
-  const renderActions = (student) => (
-    <div className="actions">
-      <Button 
-        variant="primary" 
-        size="sm" 
-        icon="fas fa-edit"
-        title="تعديل"
-      />
-      <Button 
-        variant="danger" 
-        size="sm" 
-        icon="fas fa-trash"
-        title="حذف"
-        onClick={() => handleDelete(student.id)}
-      />
-    </div>
-  );
 
   if (error) {
     return (
@@ -198,11 +188,14 @@ const StudentsPage = () => {
   }
 
   // تم الإضافة: دالة للحصول على الشعب التابعة للصف المختار
-  const getSectionsForSelectedGrade = () => {
-    if (!formData.grade) return [];
-    const selectedClass = sections.find(cls => cls.class_id == formData.grade);
-    return selectedClass ? selectedClass.sections : [];
-  };
+const getSectionsForSelectedGrade = () => {
+  if (!selectedGrade) return [];
+  // نحصل على الشعب المرتبطة بالصف المختار
+  const filtered = sections.filter(sec => sec.class_id === selectedGrade);
+  // نزيل التكرارات باستخدام Map
+  const unique = [...new Map(filtered.map(sec => [sec.id, sec])).values()];
+  return unique;
+};
 
   return (
     <div className="students-page">
@@ -328,18 +321,18 @@ const StudentsPage = () => {
           </h2>
         </div>
         {loading ? (
-          <div className="loading">
-            <i className="fas fa-spinner fa-spin"></i> جاري التحميل...
-          </div>
-        ) : students.length === 0 ? (
-          <div className="no-data">لا يوجد طلاب مسجلين</div>
-        ) : (
-          <Table 
-            columns={columns} 
-            data={students} 
-            renderActions={renderActions} 
-          />
-        )}
+  <div className="loading">
+    <i className="fas fa-spinner fa-spin"></i> جاري التحميل...
+  </div>
+) : error ? (
+  <div className="error-message">
+    <i className="fas fa-exclamation-circle"></i> {error}
+  </div>
+) : students && students.length > 0 ? (
+  <Table columns={columns} data={students} renderActions={renderActions} />
+) : (
+  <div className="no-data">لا يوجد طلاب مسجلين</div>
+)}
       </Card>
     </div>
   );
